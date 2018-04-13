@@ -52,7 +52,18 @@ end
 
 
 to look_for_food
-    ifelse coin-flip? [right random Max_Turn_Angle] [left random Max_Turn_Angle]
+  let pheromone-ahead? scent-at-angle 0
+  let pheromone-right? scent-at-angle 45
+  let pheromone-left? scent-at-angle -45
+  ifelse (pheromone-right? > pheromone-ahead? or pheromone-left? > pheromone-ahead?)
+  [ifelse pheromone-right > pheromone-left?
+    [rt 45]
+    [lt 45]
+
+    if pheromone-ahead = 0
+
+
+    [ifelse coin-flip? [right random Max_Turn_Angle] [left random Max_Turn_Angle]
     forward random Max_Step_Size
     if pcolor = green
     [
@@ -62,6 +73,8 @@ to look_for_food
      set label food-eaten
       if (food-eaten > 4) [set color orange]
       if (food-eaten > 10) [set color blue]
+    ]
+
     ]
 end
 
@@ -81,8 +94,6 @@ to evaporate_pheromone
     [set pheromone pheromone - 1]
     set plabel pheromone]
 
-
-end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
