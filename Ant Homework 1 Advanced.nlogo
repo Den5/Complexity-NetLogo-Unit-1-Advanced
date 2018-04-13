@@ -1,6 +1,6 @@
 turtles-own [food-eaten return_to_nest? blah]  ; variable
 
-patches-own [nest?]
+patches-own [nest? pheromone]
 
 to Set_Up   ; define the intial world
   clear-all
@@ -16,13 +16,14 @@ to Set_Up   ; define the intial world
     set blah 0
   ]
   grow-food
-  set_up_nest
+  set_up_patches
 
 end
 
 
-to set_up_nest
+to set_up_patches
   ask patches [
+    set pheromone 0
     set nest? (distancexy 0 0) < 2
     if nest? [set pcolor orange]
   ]
@@ -36,18 +37,33 @@ to Go  ; general algo for model
     [look_for_food]
     [return_to_nest]
   ]
+  evaporate_pheromone
   tick
 end
 
+
 to return_to_nest
   face patch 0 0 fd 1
+  set pheromone pheromone + 1
+  set plabel pheromone
   if pcolor = orange
   [set return_to_nest? false]
 end
 
 
 to look_for_food
-    ifelse coin-flip? [right random Max_Turn_Angle] [left random Max_Turn_Angle]
+  let pheromone-ahead? scent-at-angle 0
+  let pheromone-right? scent-at-angle 45
+  let pheromone-left? scent-at-angle -45
+  ifelse (pheromone-right? > pheromone-ahead? or pheromone-left? > pheromone-ahead?)
+  [ifelse pheromone-right > pheromone-left?
+    [rt 45]
+    [lt 45]
+
+    if pheromone-ahead = 0
+
+
+    [ifelse coin-flip? [right random Max_Turn_Angle] [left random Max_Turn_Angle]
     forward random Max_Step_Size
     if pcolor = green
     [
@@ -58,6 +74,8 @@ to look_for_food
       if (food-eaten > 4) [set color orange]
       if (food-eaten > 10) [set color blue]
     ]
+
+    ]
 end
 
 to-report coin-flip?
@@ -67,6 +85,17 @@ end
 to grow-food
   ask patches [set pcolor green]
 end
+
+to evaporate_pheromone
+  let x random-float 1
+  ask patches with [pheromone > 0]
+  [if x < probability-to-evaporate
+
+    [set pheromone pheromone - 1]
+    set plabel pheromone]
+
+end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -198,6 +227,21 @@ Max_Turn_Angle
 180
 120.0
 1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+247
+195
+280
+probability-to-evaporate
+probability-to-evaporate
+0
+1
+0.5
+0.01
 1
 NIL
 HORIZONTAL
