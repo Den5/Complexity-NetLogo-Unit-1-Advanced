@@ -94,8 +94,6 @@ to evaporate_pheromone
     [set pheromone pheromone - 1]
     set plabel pheromone]
 
-end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
