@@ -1,6 +1,6 @@
 turtles-own [food-eaten return_to_nest? blah]  ; variable
 
-patches-own [nest?]
+patches-own [nest? pheromone]
 
 to Set_Up   ; define the intial world
   clear-all
@@ -16,13 +16,14 @@ to Set_Up   ; define the intial world
     set blah 0
   ]
   grow-food
-  set_up_nest
+  set_up_patches
 
 end
 
 
-to set_up_nest
+to set_up_patches
   ask patches [
+    set pheromone 0
     set nest? (distancexy 0 0) < 2
     if nest? [set pcolor orange]
   ]
@@ -41,6 +42,8 @@ end
 
 to return_to_nest
   face patch 0 0 fd 1
+  set pheromone pheromone + 1
+  set plabel pheromone
   if pcolor = orange
   [set return_to_nest? false]
 end
