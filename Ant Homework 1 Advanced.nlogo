@@ -37,8 +37,10 @@ to Go  ; general algo for model
     [look_for_food]
     [return_to_nest]
   ]
+  evaporate_pheromone
   tick
 end
+
 
 to return_to_nest
   face patch 0 0 fd 1
@@ -69,6 +71,17 @@ end
 
 to grow-food
   ask patches [set pcolor green]
+end
+
+to evaporate_pheromone
+  let x random-float 1
+  ask patches with [pheromone > 0]
+  [if x < probability-to-evaporate
+
+    [set pheromone pheromone - 1]
+    set plabel pheromone]
+
+
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -201,6 +214,21 @@ Max_Turn_Angle
 180
 120.0
 1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+247
+195
+280
+probability-to-evaporate
+probability-to-evaporate
+0
+1
+0.5
+0.01
 1
 NIL
 HORIZONTAL
