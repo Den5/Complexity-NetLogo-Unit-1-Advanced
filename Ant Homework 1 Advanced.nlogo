@@ -1,3 +1,5 @@
+; model work better if the food is not all over the model
+
 turtles-own [food-eaten return_to_nest? blah]  ; variable
 
 patches-own [nest? pheromone]
@@ -56,14 +58,14 @@ to look_for_food
   let pheromone-right? scent-at-angle 45
   let pheromone-left? scent-at-angle -45
   ifelse (pheromone-right? > pheromone-ahead? or pheromone-left? > pheromone-ahead?)
-  [ifelse pheromone-right > pheromone-left?
+  [ifelse pheromone-right? > pheromone-left?
     [rt 45]
-    [lt 45]
+    [lt 45]]
 
-    if pheromone-ahead = 0
+   [ if pheromone-ahead? = 0
 
 
-    [ifelse coin-flip? [right random Max_Turn_Angle] [left random Max_Turn_Angle]
+    [ifelse coin-flip? [right random Max_Turn_Angle] [left random Max_Turn_Angle]]
     forward random Max_Step_Size
     if pcolor = green
     [
@@ -93,6 +95,20 @@ to evaporate_pheromone
 
     [set pheromone pheromone - 1]
     set plabel pheromone]
+
+end
+
+to-report scent-at-angle [angle]
+  let p patch-right-and-ahead angle 1
+  if p = nobody [report 0]
+  report [pheromone] of p
+end
+
+
+
+
+
+
 
 @#$#@#$#@
 GRAPHICS-WINDOW
